@@ -12,6 +12,7 @@ namespace Cogwheel_Plugin
 {
     public partial class MainForm : Form
     {
+        private Model.KompasWrapper _kompasWrapper = new Model.KompasWrapper();
         public MainForm()
         {
             InitializeComponent();
@@ -26,32 +27,27 @@ namespace Cogwheel_Plugin
         {
             if (OuterRadiusTextBox.Text == "" || OuterRadiusTextBox.Text == "." || OuterRadiusTextBox.Text == ",")
             {
-                OuterRadiusLabel.BackColor = Color.Red;
-                MessageBox.Show("Не верно задан внешний радиус!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                ShowErrorMessage(OuterRadiusLabel, "Не верно задан внешний радиус!");
             }
 
             if (InnerRadiusTextBox.Text == "" || InnerRadiusTextBox.Text == "." || InnerRadiusTextBox.Text == ",")
             {
-                InnerRadiusLabel.BackColor = Color.Red;
-                MessageBox.Show("Не верно задан внутренний радиус!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                ShowErrorMessage(InnerRadiusLabel, "Не верно задан внутренний радиус!");
             }
 
             if (HoleRadiusTextBox.Text == "" || HoleRadiusTextBox.Text == "." || HoleRadiusTextBox.Text == ",")
             {
-                HoleRadiusLabel.BackColor = Color.Red;
-                MessageBox.Show("Не верно задан радиус отверстия!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                ShowErrorMessage(HoleRadiusLabel, "Не верно задан радиус отверстия!");
             }
 
             if (DepthTextBox.Text == "" || DepthTextBox.Text == "." || DepthTextBox.Text == ",")
             {
-                DepthLabel.BackColor = Color.Red;
-                MessageBox.Show("Не верно задана толщина!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                ShowErrorMessage(DepthLabel, "Не верно задана толщина!");
             }
 
             if (CogsTextBox.Text == "")
             {
-                CogsLabel.BackColor = Color.Red;
-                MessageBox.Show("Не верно задано количество зубцов!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                ShowErrorMessage(CogsLabel, "Не верно задано количество зубцов!");
             }
 
             Model.Cogwheel cw = null;
@@ -66,28 +62,23 @@ namespace Cogwheel_Plugin
             }
             catch (Model.Exceptions.CogwheelWrongOuterRadiusException ex)
             {
-                OuterRadiusLabel.BackColor = Color.Red;
-                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                ShowErrorMessage(OuterRadiusLabel, ex.Message);
             }
             catch (Model.Exceptions.CogwheelWrongInnerRadiusException ex)
             {
-                InnerRadiusLabel.BackColor = Color.Red;
-                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                ShowErrorMessage(InnerRadiusLabel, ex.Message);
             }
             catch (Model.Exceptions.CogwheelWrongHoleRadiusException ex)
             {
-                HoleRadiusLabel.BackColor = Color.Red;
-                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                ShowErrorMessage(HoleRadiusLabel, ex.Message);
             }
             catch (Model.Exceptions.CogwheelWrongDepthException ex)
             {
-                DepthLabel.BackColor = Color.Red;
-                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                ShowErrorMessage(DepthLabel, ex.Message);
             }
             catch (Model.Exceptions.CogwheelWrongCogsException ex)
             {
-                CogsLabel.BackColor = Color.Red;
-                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                ShowErrorMessage(CogsLabel, ex.Message);
             }
             catch (System.FormatException)
             {
@@ -96,28 +87,8 @@ namespace Cogwheel_Plugin
 
             if (cw != null)
             {
-                Model.KompasWrapper kompasWrapper = new Model.KompasWrapper();
-                bool retry = true;
-                short tried = 0;
-                while (retry)
-                {
-                    try
-                    {
-                        tried++;
-                        kompasWrapper.StartKompas();
-                        kompasWrapper.BuildCogwheel(cw);
-                        retry = false;
-                    }
-                    catch (System.Runtime.InteropServices.COMException ex)
-                    {
-                        kompasWrapper.ResetKompasObject();
-                        if (tried > 3)
-                        {
-                            retry = false;
-                            MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
-                        }
-                    }
-                }
+                _kompasWrapper.StartKompas();
+                _kompasWrapper.BuildCogwheel(cw);
             }
         }
 
@@ -173,8 +144,9 @@ namespace Cogwheel_Plugin
         }
 
         private void ShowErrorMessage(Label label, string message)
-        { 
-            
+        {
+            label.BackColor = Color.Pink;
+            MessageBox.Show(message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
         }
     }
 }

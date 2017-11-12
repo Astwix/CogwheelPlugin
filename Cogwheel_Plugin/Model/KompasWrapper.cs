@@ -12,7 +12,7 @@ namespace Cogwheel_Plugin.Model
 {
     class KompasWrapper
     {
-        private static KompasObject _kompas = null;
+        private KompasObject _kompas = null;
 
         public void StartKompas()
         {
@@ -24,7 +24,26 @@ namespace Cogwheel_Plugin.Model
 
             if (_kompas != null)
             {
-                _kompas.Visible = true;
+                bool retry = true;
+                short tried = 0;
+                while (retry)
+                {
+                    try
+                    {
+                        tried++;
+                        _kompas.Visible = true;
+                        retry = false;
+                    }
+                    catch (System.Runtime.InteropServices.COMException ex)
+                    {
+                        Type t = Type.GetTypeFromProgID("KOMPAS.Application.5");
+                        _kompas = (KompasObject)Activator.CreateInstance(t);
+                        if (tried > 3)
+                        {
+                            retry = false;
+                        }
+                    }
+                }
                 _kompas.ActivateControllerAPI();
             }
 
