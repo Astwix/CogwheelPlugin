@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Cogwheel_Plugin.Model.Exceptions
 {
-    class CogwheelWrongCogsException:ApplicationException
+    public class CogwheelWrongCogsException:ApplicationException
     {
         public CogwheelWrongCogsException(string message) :base(message)
         {

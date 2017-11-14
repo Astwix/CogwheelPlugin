@@ -1,0 +1,16 @@
+D:\COOL_HACKER\C_SHARP\Cogwheel_Plugin\Cogwheel_Plugin_Tests\bin\Debug\NUnit3.TestAdapter.dll
+D:\COOL_HACKER\C_SHARP\Cogwheel_Plugin\Cogwheel_Plugin_Tests\bin\Debug\nunit.engine.dll
+D:\COOL_HACKER\C_SHARP\Cogwheel_Plugin\Cogwheel_Plugin_Tests\bin\Debug\nunit.engine.api.dll
+D:\COOL_HACKER\C_SHARP\Cogwheel_Plugin\Cogwheel_Plugin_Tests\bin\Debug\Mono.Cecil.dll
+D:\COOL_HACKER\C_SHARP\Cogwheel_Plugin\Cogwheel_Plugin_Tests\bin\Debug\Mono.Cecil.Pdb.dll
+D:\COOL_HACKER\C_SHARP\Cogwheel_Plugin\Cogwheel_Plugin_Tests\bin\Debug\Mono.Cecil.Mdb.dll
+D:\COOL_HACKER\C_SHARP\Cogwheel_Plugin\Cogwheel_Plugin_Tests\bin\Debug\Mono.Cecil.Rocks.dll
+D:\COOL_HACKER\C_SHARP\Cogwheel_Plugin\Cogwheel_Plugin_Tests\bin\Debug\Cogwheel_Plugin_Tests.dll
+D:\COOL_HACKER\C_SHARP\Cogwheel_Plugin\Cogwheel_Plugin_Tests\bin\Debug\Cogwheel_Plugin_Tests.pdb
+D:\COOL_HACKER\C_SHARP\Cogwheel_Plugin\Cogwheel_Plugin_Tests\bin\Debug\Cogwheel_Plugin.exe
+D:\COOL_HACKER\C_SHARP\Cogwheel_Plugin\Cogwheel_Plugin_Tests\bin\Debug\nunit.framework.dll
+D:\COOL_HACKER\C_SHARP\Cogwheel_Plugin\Cogwheel_Plugin_Tests\bin\Debug\Cogwheel_Plugin.pdb
+D:\COOL_HACKER\C_SHARP\Cogwheel_Plugin\Cogwheel_Plugin_Tests\bin\Debug\nunit.framework.xml
+D:\COOL_HACKER\C_SHARP\Cogwheel_Plugin\Cogwheel_Plugin_Tests\obj\Debug\Cogwheel_Plugin_Tests.csprojResolveAssemblyReference.cache
+D:\COOL_HACKER\C_SHARP\Cogwheel_Plugin\Cogwheel_Plugin_Tests\obj\Debug\Cogwheel_Plugin_Tests.dll
+D:\COOL_HACKER\C_SHARP\Cogwheel_Plugin\Cogwheel_Plugin_Tests\obj\Debug\Cogwheel_Plugin_Tests.pdb

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.BuildButton = new System.Windows.Forms.Button();
             this.OuterRadiusLabel = new System.Windows.Forms.Label();
             this.InnerRadiusLabel = new System.Windows.Forms.Label();
@@ -40,6 +41,7 @@
             this.DepthTextBox = new System.Windows.Forms.TextBox();
             this.CogsTextBox = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -104,6 +106,7 @@
             this.OuterRadiusTextBox.Name = "OuterRadiusTextBox";
             this.OuterRadiusTextBox.Size = new System.Drawing.Size(100, 20);
             this.OuterRadiusTextBox.TabIndex = 6;
+            this.toolTip1.SetToolTip(this.OuterRadiusTextBox, "[0,3; 100]");
             this.OuterRadiusTextBox.TextChanged += new System.EventHandler(this.OuterRadiusTextBox_TextChanged);
             // 
             // InnerRadiusTextBox
@@ -112,6 +115,7 @@
             this.InnerRadiusTextBox.Name = "InnerRadiusTextBox";
             this.InnerRadiusTextBox.Size = new System.Drawing.Size(100, 20);
             this.InnerRadiusTextBox.TabIndex = 7;
+            this.toolTip1.SetToolTip(this.InnerRadiusTextBox, "[0,2; 100)");
             this.InnerRadiusTextBox.TextChanged += new System.EventHandler(this.InnerRadiusTextBox_TextChanged);
             // 
             // HoleRadiusTextBox
@@ -120,6 +124,7 @@
             this.HoleRadiusTextBox.Name = "HoleRadiusTextBox";
             this.HoleRadiusTextBox.Size = new System.Drawing.Size(100, 20);
             this.HoleRadiusTextBox.TabIndex = 8;
+            this.toolTip1.SetToolTip(this.HoleRadiusTextBox, "[0,1; 50]");
             this.HoleRadiusTextBox.TextChanged += new System.EventHandler(this.HoleRadiusTextBox_TextChanged);
             // 
             // DepthTextBox
@@ -128,6 +133,7 @@
             this.DepthTextBox.Name = "DepthTextBox";
             this.DepthTextBox.Size = new System.Drawing.Size(100, 20);
             this.DepthTextBox.TabIndex = 9;
+            this.toolTip1.SetToolTip(this.DepthTextBox, "[0,5; 100)\r\n");
             this.DepthTextBox.TextChanged += new System.EventHandler(this.DepthTextBox_TextChanged);
             // 
             // CogsTextBox
@@ -136,6 +142,7 @@
             this.CogsTextBox.Name = "CogsTextBox";
             this.CogsTextBox.Size = new System.Drawing.Size(100, 20);
             this.CogsTextBox.TabIndex = 10;
+            this.toolTip1.SetToolTip(this.CogsTextBox, "[5; 30]\r\n");
             this.CogsTextBox.TextChanged += new System.EventHandler(this.CogsTextBox_TextChanged);
             // 
             // groupBox1
@@ -155,11 +162,15 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Размеры";
             // 
+            // toolTip1
+            // 
+            this.toolTip1.ToolTipTitle = "Подсказка";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(353, 214);
+            this.ClientSize = new System.Drawing.Size(348, 213);
             this.Controls.Add(this.CogsTextBox);
             this.Controls.Add(this.CogsLabel);
             this.Controls.Add(this.BuildButton);
@@ -187,6 +198,7 @@
         private System.Windows.Forms.TextBox DepthTextBox;
         private System.Windows.Forms.TextBox CogsTextBox;
         private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
 

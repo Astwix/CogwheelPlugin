@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Cogwheel_Plugin.Model
 {
-    class Cogwheel
+    public class Cogwheel
     {
         private double _innerRadius; // внутренний радиус
         private double _outerRadius; // внешний радиус

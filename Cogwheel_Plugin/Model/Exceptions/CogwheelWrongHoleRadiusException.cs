@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Cogwheel_Plugin.Model.Exceptions
 {
-    class CogwheelWrongHoleRadiusException : ApplicationException
+    public class CogwheelWrongHoleRadiusException : ApplicationException
     {
         public CogwheelWrongHoleRadiusException(string message) :base(message)
         {
