@@ -23,6 +23,7 @@ namespace CogwheelPlugin
             _bindTextboxToLabel.Add(HoleRadiusTextBox, HoleRadiusLabel);
             _bindTextboxToLabel.Add(DepthTextBox, DepthLabel);
             _bindTextboxToLabel.Add(CogsTextBox, CogsLabel);
+            _bindTextboxToLabel.Add(ExtrudeCountTextBox, ExtrudeCountLabel);
             InnerRadiusTextBox.KeyPress += new KeyPressEventHandler(IsNumberOrDotPressed);
             OuterRadiusTextBox.KeyPress += new KeyPressEventHandler(IsNumberOrDotPressed);
             HoleRadiusTextBox.KeyPress += new KeyPressEventHandler(IsNumberOrDotPressed);
@@ -41,7 +42,10 @@ namespace CogwheelPlugin
                 double tempHoleRadius = Convert.ToDouble(HoleRadiusTextBox.Text);
                 double tempDepth = Convert.ToDouble(DepthTextBox.Text);
                 int tempCogs = Convert.ToInt32(CogsTextBox.Text);
-                cw = new Model.Cogwheel(tempInnerRadius, tempOuterRadius, tempHoleRadius, tempDepth, tempCogs);
+                int extrudeCount = Convert.ToInt32(ExtrudeCountTextBox.Text);
+                Model.ExtrudeType typeOfExtrude = (Model.ExtrudeType)ExtrudeTypeComboBox.SelectedIndex;
+                cw = new Model.Cogwheel(tempInnerRadius, tempOuterRadius,
+                    tempHoleRadius, tempDepth, tempCogs, typeOfExtrude, extrudeCount);
             }
             catch (CogwheelWrongOuterRadiusException ex)
             {

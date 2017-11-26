@@ -6,6 +6,14 @@ using System.Threading.Tasks;
 
 namespace CogwheelPlugin.Model
 {
+    public enum ExtrudeType
+    { 
+        Classic = 0,
+        Circles,
+        Boats,
+        Needles
+    }
+
     public class Cogwheel
     {
         private double _innerRadius; // внутренний радиус
@@ -13,14 +21,42 @@ namespace CogwheelPlugin.Model
         private double _holeRadius; //радиус прореизи 
         private double _depth; //толщина шестеренки
         private int _cogs; //количество зубцов
+        private ExtrudeType _typeOfExtrude; //тип выреза
+        private int _extrudeCount; //количество вырезов
 
-        public Cogwheel(double innerRadius, double outerRadius, double holeRadius, double depth, int cogs)
+        public int ExtrudeCount
+        {
+            get { return _extrudeCount; }
+            set { _extrudeCount = value; }
+        }
+
+        public ExtrudeType TypeOfExtrude
+        {
+            get { return _typeOfExtrude; }
+            set { _typeOfExtrude = value; }
+        }
+
+        public Cogwheel(double innerRadius, double outerRadius, 
+            double holeRadius, double depth, int cogs)
         {
             OuterRadius = outerRadius;
             InnerRadius = innerRadius;
             HoleRadius = holeRadius;
             Depth = depth;
             Cogs = cogs;
+        }
+
+        public Cogwheel(double innerRadius, double outerRadius, 
+            double holeRadius, double depth, int cogs, 
+            ExtrudeType extrudeType, int extrudeCount)
+        {
+            OuterRadius = outerRadius;
+            InnerRadius = innerRadius;
+            HoleRadius = holeRadius;
+            Depth = depth;
+            Cogs = cogs;
+            TypeOfExtrude = extrudeType;
+            ExtrudeCount = extrudeCount;
         }
 
         public double InnerRadius
