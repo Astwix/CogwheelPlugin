@@ -124,7 +124,7 @@
             this.HoleRadiusTextBox.Name = "HoleRadiusTextBox";
             this.HoleRadiusTextBox.Size = new System.Drawing.Size(100, 20);
             this.HoleRadiusTextBox.TabIndex = 8;
-            this.toolTip1.SetToolTip(this.HoleRadiusTextBox, "[0,1; 50]");
+            this.toolTip1.SetToolTip(this.HoleRadiusTextBox, "[0,1; 30]");
             this.HoleRadiusTextBox.TextChanged += new System.EventHandler(this.HoleRadiusTextBox_TextChanged);
             // 
             // DepthTextBox
@@ -133,7 +133,7 @@
             this.DepthTextBox.Name = "DepthTextBox";
             this.DepthTextBox.Size = new System.Drawing.Size(100, 20);
             this.DepthTextBox.TabIndex = 9;
-            this.toolTip1.SetToolTip(this.DepthTextBox, "[0,5; 100)\r\n");
+            this.toolTip1.SetToolTip(this.DepthTextBox, "[0,5; 70]");
             this.DepthTextBox.TextChanged += new System.EventHandler(this.DepthTextBox_TextChanged);
             // 
             // CogsTextBox

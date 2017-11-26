@@ -26,9 +26,11 @@ namespace Cogwheel_Plugin.Model
         public double InnerRadius
         {
             get { return _innerRadius;}
-            set
+            private set
             {
                 if (!IsValidDouble(value)) { throw new Exceptions.CogwheelWrongInnerRadiusException("Заданный внутренний радиус - не вещественное число."); }
+                if (!(value >= 1)) { throw new Exceptions.CogwheelWrongInnerRadiusException("Внутренний радиус не может быть меньше 1 мм."); }
+                if (!(value <= 95)) { throw new Exceptions.CogwheelWrongInnerRadiusException("Внутренний радиус не может быть больше 95 мм."); }
                 if (!(value > HoleRadius)) { throw new Exceptions.CogwheelWrongInnerRadiusException("Внутренний радиус не может быть меньше или равен радиусу внутреннего отверстия."); }
                 if (!(value < OuterRadius)) { throw new Exceptions.CogwheelWrongInnerRadiusException("Внутренний радиус не может быть больше или равен внешнему радиусу."); }
                 _innerRadius = value;
@@ -37,9 +39,11 @@ namespace Cogwheel_Plugin.Model
         public double OuterRadius
         {
             get { return _outerRadius;}
-            set
+            private set
             {
                 if (!IsValidDouble(value)) { throw new Exceptions.CogwheelWrongOuterRadiusException("Заданный внешний радиус - не вещественное число."); }
+                if (!(value >= 1.5)) { throw new Exceptions.CogwheelWrongOuterRadiusException("Внешний радиус не может быть меньше 1,5 мм."); }
+                if (!(value <= 100)) { throw new Exceptions.CogwheelWrongOuterRadiusException("Внешний радиус не может быть больше 100 мм."); }
                 if (!(value > InnerRadius)) { throw new Exceptions.CogwheelWrongOuterRadiusException("Внешний радиус не может быть меньше или равен внутреннему радиусу."); }
                 _outerRadius = value;
             }
@@ -47,9 +51,11 @@ namespace Cogwheel_Plugin.Model
         public double HoleRadius
         {
             get { return _holeRadius;}
-            set
+            private set
             {
                 if (!IsValidDouble(value)) { throw new Exceptions.CogwheelWrongHoleRadiusException("Заданный радиус внутреннего отверстия - не вещественное число."); }
+                if (!(value >= 0.5)) { throw new Exceptions.CogwheelWrongHoleRadiusException("Радиус внутреннего отверстия не может быть меньше 0,5 мм."); }
+                if (!(value <= 30)) { throw new Exceptions.CogwheelWrongHoleRadiusException("Радиус внутреннего отверстия не может быть больше 30 мм."); }
                 if (!(value > 0)) { throw new Exceptions.CogwheelWrongHoleRadiusException("Радиус внутреннего отверстия не может быть меньше или равен нулю."); }
                 if (!(value < InnerRadius)) { throw new Exceptions.CogwheelWrongHoleRadiusException("Радиус внутреннего отверстия не может быть больше или равен внутреннему радиусу."); }
                 _holeRadius = value;
@@ -58,10 +64,11 @@ namespace Cogwheel_Plugin.Model
         public double Depth
         {
             get { return _depth;}
-            set
+            private set
             {
                 if (!IsValidDouble(value)) { throw new Exceptions.CogwheelWrongDepthException("Заданная толщина - не вещественное число."); }
                 if (!(value >= 0.5)) { throw new Exceptions.CogwheelWrongDepthException("Толщина не может быть меньше 0.5 мм."); }
+                if (!(value <= 70)) { throw new Exceptions.CogwheelWrongDepthException("Толщина не может быть больше 70 мм."); }
                 if (!(value <= OuterRadius)) { throw new Exceptions.CogwheelWrongDepthException("Толщина не может быть больше или равна внешнему радиусу."); }
                 _depth = value;
             }
@@ -69,7 +76,7 @@ namespace Cogwheel_Plugin.Model
         public int Cogs
         {
             get { return _cogs;}
-            set
+            private set
             {
                 if (!IsValidInt(value)) { throw new Exceptions.CogwheelWrongCogsException("Заданное число зубцов - не вещественное число."); }
                 if (!(value >= 5)) { throw new Exceptions.CogwheelWrongCogsException("Число зубцов не может быть меньше 5."); }
