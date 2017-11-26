@@ -50,7 +50,7 @@
             this.BuildButton.Location = new System.Drawing.Point(237, 179);
             this.BuildButton.Name = "BuildButton";
             this.BuildButton.Size = new System.Drawing.Size(100, 23);
-            this.BuildButton.TabIndex = 0;
+            this.BuildButton.TabIndex = 11;
             this.BuildButton.Text = "Построить";
             this.BuildButton.UseVisualStyleBackColor = true;
             this.BuildButton.Click += new System.EventHandler(this.buildButton_Click);
@@ -107,7 +107,8 @@
             this.OuterRadiusTextBox.Size = new System.Drawing.Size(100, 20);
             this.OuterRadiusTextBox.TabIndex = 6;
             this.toolTip1.SetToolTip(this.OuterRadiusTextBox, "[0,3; 100]");
-            this.OuterRadiusTextBox.TextChanged += new System.EventHandler(this.OuterRadiusTextBox_TextChanged);
+            this.OuterRadiusTextBox.TextChanged += new System.EventHandler(this.ResetBackColor);
+            this.OuterRadiusTextBox.Leave += new System.EventHandler(this.TextboxValidation);
             // 
             // InnerRadiusTextBox
             // 
@@ -116,7 +117,8 @@
             this.InnerRadiusTextBox.Size = new System.Drawing.Size(100, 20);
             this.InnerRadiusTextBox.TabIndex = 7;
             this.toolTip1.SetToolTip(this.InnerRadiusTextBox, "[0,2; 100)");
-            this.InnerRadiusTextBox.TextChanged += new System.EventHandler(this.InnerRadiusTextBox_TextChanged);
+            this.InnerRadiusTextBox.TextChanged += new System.EventHandler(this.ResetBackColor);
+            this.InnerRadiusTextBox.Leave += new System.EventHandler(this.TextboxValidation);
             // 
             // HoleRadiusTextBox
             // 
@@ -125,7 +127,8 @@
             this.HoleRadiusTextBox.Size = new System.Drawing.Size(100, 20);
             this.HoleRadiusTextBox.TabIndex = 8;
             this.toolTip1.SetToolTip(this.HoleRadiusTextBox, "[0,1; 30]");
-            this.HoleRadiusTextBox.TextChanged += new System.EventHandler(this.HoleRadiusTextBox_TextChanged);
+            this.HoleRadiusTextBox.TextChanged += new System.EventHandler(this.ResetBackColor);
+            this.HoleRadiusTextBox.Leave += new System.EventHandler(this.TextboxValidation);
             // 
             // DepthTextBox
             // 
@@ -134,7 +137,8 @@
             this.DepthTextBox.Size = new System.Drawing.Size(100, 20);
             this.DepthTextBox.TabIndex = 9;
             this.toolTip1.SetToolTip(this.DepthTextBox, "[0,5; 70]");
-            this.DepthTextBox.TextChanged += new System.EventHandler(this.DepthTextBox_TextChanged);
+            this.DepthTextBox.TextChanged += new System.EventHandler(this.ResetBackColor);
+            this.DepthTextBox.Leave += new System.EventHandler(this.TextboxValidation);
             // 
             // CogsTextBox
             // 
@@ -143,7 +147,8 @@
             this.CogsTextBox.Size = new System.Drawing.Size(100, 20);
             this.CogsTextBox.TabIndex = 10;
             this.toolTip1.SetToolTip(this.CogsTextBox, "[5; 30]\r\n");
-            this.CogsTextBox.TextChanged += new System.EventHandler(this.CogsTextBox_TextChanged);
+            this.CogsTextBox.TextChanged += new System.EventHandler(this.ResetBackColor);
+            this.CogsTextBox.Leave += new System.EventHandler(this.TextboxValidation);
             // 
             // groupBox1
             // 

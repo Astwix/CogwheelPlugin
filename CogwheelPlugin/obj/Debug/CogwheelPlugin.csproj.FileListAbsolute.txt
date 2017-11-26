@@ -18,3 +18,13 @@ D:\COOL_HACKER\C_SHARP\Cogwheel_Plugin\CogwheelPlugin\obj\Debug\CogwheelPlugin.P
 D:\COOL_HACKER\C_SHARP\Cogwheel_Plugin\CogwheelPlugin\obj\Debug\CogwheelPlugin.csproj.GenerateResource.Cache
 D:\COOL_HACKER\C_SHARP\Cogwheel_Plugin\CogwheelPlugin\obj\Debug\CogwheelPlugin.exe
 D:\COOL_HACKER\C_SHARP\Cogwheel_Plugin\CogwheelPlugin\obj\Debug\CogwheelPlugin.pdb
+D:\COOL_HACKER\C_SHARP\CogwheelPlugin\CogwheelPlugin\bin\Debug\CogwheelPlugin.exe.config
+D:\COOL_HACKER\C_SHARP\CogwheelPlugin\CogwheelPlugin\obj\Debug\CogwheelPlugin.exe
+D:\COOL_HACKER\C_SHARP\CogwheelPlugin\CogwheelPlugin\obj\Debug\CogwheelPlugin.pdb
+D:\COOL_HACKER\C_SHARP\CogwheelPlugin\CogwheelPlugin\bin\Debug\CogwheelPlugin.exe
+D:\COOL_HACKER\C_SHARP\CogwheelPlugin\CogwheelPlugin\bin\Debug\CogwheelPlugin.pdb
+D:\COOL_HACKER\C_SHARP\CogwheelPlugin\CogwheelPlugin\bin\Debug\KAPITypes.dll
+D:\COOL_HACKER\C_SHARP\CogwheelPlugin\CogwheelPlugin\obj\Debug\CogwheelPlugin.csprojResolveAssemblyReference.cache
+D:\COOL_HACKER\C_SHARP\CogwheelPlugin\CogwheelPlugin\obj\Debug\CogwheelPlugin.MainForm.resources
+D:\COOL_HACKER\C_SHARP\CogwheelPlugin\CogwheelPlugin\obj\Debug\CogwheelPlugin.Properties.Resources.resources
+D:\COOL_HACKER\C_SHARP\CogwheelPlugin\CogwheelPlugin\obj\Debug\CogwheelPlugin.csproj.GenerateResource.Cache

@@ -7,49 +7,32 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CogwheelPlugin.Model.Exceptions;
 
 namespace CogwheelPlugin
 {
     public partial class MainForm : Form
     {
         private Model.KompasWrapper _kompasWrapper = new Model.KompasWrapper();
+        private Dictionary<TextBox, Label> _bindTextboxToLabel = new Dictionary<TextBox, Label>();
         public MainForm()
         {
             InitializeComponent();
+            _bindTextboxToLabel.Add(InnerRadiusTextBox, InnerRadiusLabel);
+            _bindTextboxToLabel.Add(OuterRadiusTextBox, OuterRadiusLabel);
+            _bindTextboxToLabel.Add(HoleRadiusTextBox, HoleRadiusLabel);
+            _bindTextboxToLabel.Add(DepthTextBox, DepthLabel);
+            _bindTextboxToLabel.Add(CogsTextBox, CogsLabel);
             InnerRadiusTextBox.KeyPress += new KeyPressEventHandler(IsNumberOrDotPressed);
             OuterRadiusTextBox.KeyPress += new KeyPressEventHandler(IsNumberOrDotPressed);
             HoleRadiusTextBox.KeyPress += new KeyPressEventHandler(IsNumberOrDotPressed);
             DepthTextBox.KeyPress += new KeyPressEventHandler(IsNumberOrDotPressed);
             CogsTextBox.KeyPress += new KeyPressEventHandler(IsNumberPressed);
+            OuterRadiusTextBox.Select();
         }
 
         private void buildButton_Click(object sender, EventArgs e)
         {
-            if (OuterRadiusTextBox.Text == "" || OuterRadiusTextBox.Text == "." || OuterRadiusTextBox.Text == ",")
-            {
-                ShowErrorMessage(OuterRadiusLabel, "Не верно задан внешний радиус!");
-            }
-
-            if (InnerRadiusTextBox.Text == "" || InnerRadiusTextBox.Text == "." || InnerRadiusTextBox.Text == ",")
-            {
-                ShowErrorMessage(InnerRadiusLabel, "Не верно задан внутренний радиус!");
-            }
-
-            if (HoleRadiusTextBox.Text == "" || HoleRadiusTextBox.Text == "." || HoleRadiusTextBox.Text == ",")
-            {
-                ShowErrorMessage(HoleRadiusLabel, "Не верно задан радиус отверстия!");
-            }
-
-            if (DepthTextBox.Text == "" || DepthTextBox.Text == "." || DepthTextBox.Text == ",")
-            {
-                ShowErrorMessage(DepthLabel, "Не верно задана толщина!");
-            }
-
-            if (CogsTextBox.Text == "")
-            {
-                ShowErrorMessage(CogsLabel, "Не верно задано количество зубцов!");
-            }
-
             Model.Cogwheel cw = null;
             try
             {
@@ -60,27 +43,27 @@ namespace CogwheelPlugin
                 int tempCogs = Convert.ToInt32(CogsTextBox.Text);
                 cw = new Model.Cogwheel(tempInnerRadius, tempOuterRadius, tempHoleRadius, tempDepth, tempCogs);
             }
-            catch (Model.Exceptions.CogwheelWrongOuterRadiusException ex)
+            catch (CogwheelWrongOuterRadiusException ex)
             {
                 ShowErrorMessage(OuterRadiusLabel, ex.Message);
             }
-            catch (Model.Exceptions.CogwheelWrongInnerRadiusException ex)
+            catch (CogwheelWrongInnerRadiusException ex)
             {
                 ShowErrorMessage(InnerRadiusLabel, ex.Message);
             }
-            catch (Model.Exceptions.CogwheelWrongHoleRadiusException ex)
+            catch (CogwheelWrongHoleRadiusException ex)
             {
                 ShowErrorMessage(HoleRadiusLabel, ex.Message);
             }
-            catch (Model.Exceptions.CogwheelWrongDepthException ex)
+            catch (CogwheelWrongDepthException ex)
             {
                 ShowErrorMessage(DepthLabel, ex.Message);
             }
-            catch (Model.Exceptions.CogwheelWrongCogsException ex)
+            catch (CogwheelWrongCogsException ex)
             {
                 ShowErrorMessage(CogsLabel, ex.Message);
             }
-            catch (System.FormatException)
+            catch (FormatException)
             {
                 //этот случай обработан ифами выше!
             }
@@ -90,31 +73,6 @@ namespace CogwheelPlugin
                 _kompasWrapper.StartKompas();
                 _kompasWrapper.BuildCogwheel(cw);
             }
-        }
-
-        private void OuterRadiusTextBox_TextChanged(object sender, EventArgs e)
-        {
-            OuterRadiusLabel.BackColor = Control.DefaultBackColor;
-        }
-
-        private void InnerRadiusTextBox_TextChanged(object sender, EventArgs e)
-        {
-            InnerRadiusLabel.BackColor = Control.DefaultBackColor;
-        }
-
-        private void HoleRadiusTextBox_TextChanged(object sender, EventArgs e)
-        {
-            HoleRadiusLabel.BackColor = Control.DefaultBackColor;
-        }
-
-        private void DepthTextBox_TextChanged(object sender, EventArgs e)
-        {
-            DepthLabel.BackColor = Control.DefaultBackColor;
-        }
-
-        private void CogsTextBox_TextChanged(object sender, EventArgs e)
-        {
-            CogsLabel.BackColor = Control.DefaultBackColor;
         }
 
         public void IsNumberOrDotPressed(object sender, KeyPressEventArgs e)
@@ -147,6 +105,24 @@ namespace CogwheelPlugin
         {
             label.BackColor = Color.Pink;
             MessageBox.Show(message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+        }
+
+        private void TextboxValidation(object sender, EventArgs e)
+        {
+            TextBox textbox = (TextBox)sender;
+            if (textbox.Text == ""
+                || textbox.Text == "."
+                || textbox.Text == ",")
+            {
+                ShowErrorMessage(_bindTextboxToLabel[textbox], "Ошибка в значении параметра!");
+                textbox.Focus();
+            }
+        }
+
+        private void ResetBackColor(object sender, EventArgs e)
+        {
+            TextBox textbox = (TextBox)sender;
+            _bindTextboxToLabel[textbox].BackColor = DefaultBackColor;
         }
     }
 }
