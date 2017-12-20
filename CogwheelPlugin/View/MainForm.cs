@@ -29,6 +29,7 @@ namespace CogwheelPlugin
             HoleRadiusTextBox.KeyPress += new KeyPressEventHandler(IsNumberOrDotPressed);
             DepthTextBox.KeyPress += new KeyPressEventHandler(IsNumberOrDotPressed);
             CogsTextBox.KeyPress += new KeyPressEventHandler(IsNumberPressed);
+            ExtrudeCountTextBox.KeyPress += new KeyPressEventHandler(IsNumberPressed);
             OuterRadiusTextBox.Select();
         }
 
@@ -66,6 +67,10 @@ namespace CogwheelPlugin
             catch (CogwheelWrongCogsException ex)
             {
                 ShowErrorMessage(CogsLabel, ex.Message);
+            }
+            catch (CogwheelWrongExtrudeCountException ex)
+            {
+                ShowErrorMessage(ExtrudeCountLabel, ex.Message);
             }
             catch (FormatException)
             {

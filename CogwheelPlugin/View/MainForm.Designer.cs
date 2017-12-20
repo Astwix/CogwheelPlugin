@@ -213,6 +213,7 @@
             this.ExtrudeCountTextBox.Name = "ExtrudeCountTextBox";
             this.ExtrudeCountTextBox.Size = new System.Drawing.Size(100, 20);
             this.ExtrudeCountTextBox.TabIndex = 12;
+            this.toolTip1.SetToolTip(this.ExtrudeCountTextBox, "[3; 30]");
             this.ExtrudeCountTextBox.TextChanged += new System.EventHandler(this.ResetBackColor);
             this.ExtrudeCountTextBox.Leave += new System.EventHandler(this.TextboxValidation);
             // 

@@ -27,7 +27,12 @@ namespace CogwheelPlugin.Model
         public int ExtrudeCount
         {
             get { return _extrudeCount; }
-            set { _extrudeCount = value; }
+            set 
+            {
+                if ((value < 3)) { throw new Exceptions.CogwheelWrongExtrudeCountException("Количество вырезов не может быть меньше 3."); }
+                if ((value >= 30)) { throw new Exceptions.CogwheelWrongExtrudeCountException("Количество вырезов не может быть больше 30."); }
+                _extrudeCount = value; 
+            }
         }
 
         public ExtrudeType TypeOfExtrude
