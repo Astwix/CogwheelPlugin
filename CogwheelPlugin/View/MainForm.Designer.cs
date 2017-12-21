@@ -42,10 +42,10 @@
             this.CogsTextBox = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.ExtrudeCountTextBox = new System.Windows.Forms.TextBox();
             this.ExtrudeTypeComboBox = new System.Windows.Forms.ComboBox();
             this.ExtrudeTypeLabel = new System.Windows.Forms.Label();
             this.ExtrudeCountLabel = new System.Windows.Forms.Label();
-            this.ExtrudeCountTextBox = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -57,7 +57,7 @@
             this.BuildButton.TabIndex = 13;
             this.BuildButton.Text = "Построить";
             this.BuildButton.UseVisualStyleBackColor = true;
-            this.BuildButton.Click += new System.EventHandler(this.buildButton_Click);
+            this.BuildButton.Click += new System.EventHandler(this.BuildButton_Click);
             // 
             // OuterRadiusLabel
             // 
@@ -110,7 +110,7 @@
             this.OuterRadiusTextBox.Name = "OuterRadiusTextBox";
             this.OuterRadiusTextBox.Size = new System.Drawing.Size(100, 20);
             this.OuterRadiusTextBox.TabIndex = 6;
-            this.toolTip1.SetToolTip(this.OuterRadiusTextBox, "[0,3; 100]");
+            this.toolTip1.SetToolTip(this.OuterRadiusTextBox, "[1,5; 100]");
             this.OuterRadiusTextBox.TextChanged += new System.EventHandler(this.ResetBackColor);
             this.OuterRadiusTextBox.Leave += new System.EventHandler(this.TextboxValidation);
             // 
@@ -120,7 +120,7 @@
             this.InnerRadiusTextBox.Name = "InnerRadiusTextBox";
             this.InnerRadiusTextBox.Size = new System.Drawing.Size(100, 20);
             this.InnerRadiusTextBox.TabIndex = 7;
-            this.toolTip1.SetToolTip(this.InnerRadiusTextBox, "[0,2; 100)");
+            this.toolTip1.SetToolTip(this.InnerRadiusTextBox, "[1; 95]");
             this.InnerRadiusTextBox.TextChanged += new System.EventHandler(this.ResetBackColor);
             this.InnerRadiusTextBox.Leave += new System.EventHandler(this.TextboxValidation);
             // 
@@ -130,7 +130,7 @@
             this.HoleRadiusTextBox.Name = "HoleRadiusTextBox";
             this.HoleRadiusTextBox.Size = new System.Drawing.Size(100, 20);
             this.HoleRadiusTextBox.TabIndex = 8;
-            this.toolTip1.SetToolTip(this.HoleRadiusTextBox, "[0,1; 30]");
+            this.toolTip1.SetToolTip(this.HoleRadiusTextBox, "[0,5; 30]");
             this.HoleRadiusTextBox.TextChanged += new System.EventHandler(this.ResetBackColor);
             this.HoleRadiusTextBox.Leave += new System.EventHandler(this.TextboxValidation);
             // 
@@ -175,6 +175,17 @@
             // 
             this.toolTip1.ToolTipTitle = "Подсказка";
             // 
+            // ExtrudeCountTextBox
+            // 
+            this.ExtrudeCountTextBox.Location = new System.Drawing.Point(237, 206);
+            this.ExtrudeCountTextBox.Name = "ExtrudeCountTextBox";
+            this.ExtrudeCountTextBox.Size = new System.Drawing.Size(100, 20);
+            this.ExtrudeCountTextBox.TabIndex = 12;
+            this.ExtrudeCountTextBox.Text = "0";
+            this.toolTip1.SetToolTip(this.ExtrudeCountTextBox, "[3; 30]");
+            this.ExtrudeCountTextBox.TextChanged += new System.EventHandler(this.ResetBackColor);
+            this.ExtrudeCountTextBox.Leave += new System.EventHandler(this.TextboxValidation);
+            // 
             // ExtrudeTypeComboBox
             // 
             this.ExtrudeTypeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -188,6 +199,7 @@
             this.ExtrudeTypeComboBox.Name = "ExtrudeTypeComboBox";
             this.ExtrudeTypeComboBox.Size = new System.Drawing.Size(100, 21);
             this.ExtrudeTypeComboBox.TabIndex = 11;
+            this.ExtrudeTypeComboBox.SelectedIndexChanged += new System.EventHandler(this.ExtrudeTypeComboBox_SelectedIndexChanged);
             // 
             // ExtrudeTypeLabel
             // 
@@ -206,16 +218,6 @@
             this.ExtrudeCountLabel.Size = new System.Drawing.Size(113, 13);
             this.ExtrudeCountLabel.TabIndex = 14;
             this.ExtrudeCountLabel.Text = "Количество вырезов";
-            // 
-            // ExtrudeCountTextBox
-            // 
-            this.ExtrudeCountTextBox.Location = new System.Drawing.Point(237, 206);
-            this.ExtrudeCountTextBox.Name = "ExtrudeCountTextBox";
-            this.ExtrudeCountTextBox.Size = new System.Drawing.Size(100, 20);
-            this.ExtrudeCountTextBox.TabIndex = 12;
-            this.toolTip1.SetToolTip(this.ExtrudeCountTextBox, "[3; 30]");
-            this.ExtrudeCountTextBox.TextChanged += new System.EventHandler(this.ResetBackColor);
-            this.ExtrudeCountTextBox.Leave += new System.EventHandler(this.TextboxValidation);
             // 
             // MainForm
             // 

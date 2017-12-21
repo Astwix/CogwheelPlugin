@@ -50,16 +50,11 @@ namespace CogwheelPlugin.Model
             if (_kompas == null) throw new Exception("Нет связи с Kompas3D.");
         }
 
-        public void ResetKompasObject()
-        {
-            _kompas = null;
-        }
-
         public void BuildCogwheel(Cogwheel cogwheel)
         {
             if (_kompas == null) throw new Exception("Не возможно построить деталь. Нет связи с Kompas3D.");
 
-            double sector = 360 / (cogwheel.Cogs * 4); // градусов на один сектор
+            double sector = 360.0 / (cogwheel.Cogs * 4); // градусов на один сектор
             double[] xArray = new double[cogwheel.Cogs * 4];
             double[] yArray = new double[cogwheel.Cogs * 4];
             double a = 0;
@@ -117,7 +112,7 @@ namespace CogwheelPlugin.Model
                 // круги
                 case ExtrudeType.Circles:
                     {
-                        double crugsDelta = ((360 / cogwheel.ExtrudeCount) * Math.PI) / 180;
+                        double crugsDelta = ((360.0 / cogwheel.ExtrudeCount) * Math.PI) / 180;
                         double l = cogwheel.HoleRadius + (cogwheel.InnerRadius - cogwheel.HoleRadius) / 2;
                         for (int i = 0; i < cogwheel.ExtrudeCount; ++i)
                         {

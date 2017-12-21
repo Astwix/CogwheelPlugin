@@ -27,10 +27,16 @@ namespace CogwheelPlugin.Model
         public int ExtrudeCount
         {
             get { return _extrudeCount; }
-            set 
+            private set 
             {
+                if (this.TypeOfExtrude == ExtrudeType.Classic)
+                {
+                    _extrudeCount = value;
+                    return;
+                }
+                if (value > 7 && this.TypeOfExtrude == ExtrudeType.Circles) throw new Exceptions.CogwheelWrongExtrudeCountException("Количество вырезов типа 'Круги' не может быть больше 7");
                 if ((value < 3)) { throw new Exceptions.CogwheelWrongExtrudeCountException("Количество вырезов не может быть меньше 3."); }
-                if ((value >= 30)) { throw new Exceptions.CogwheelWrongExtrudeCountException("Количество вырезов не может быть больше 30."); }
+                if ((value > 30)) { throw new Exceptions.CogwheelWrongExtrudeCountException("Количество вырезов не может быть больше 30."); }
                 _extrudeCount = value; 
             }
         }
@@ -38,7 +44,7 @@ namespace CogwheelPlugin.Model
         public ExtrudeType TypeOfExtrude
         {
             get { return _typeOfExtrude; }
-            set { _typeOfExtrude = value; }
+            private set { _typeOfExtrude = value; }
         }
 
         public Cogwheel(double innerRadius, double outerRadius, 

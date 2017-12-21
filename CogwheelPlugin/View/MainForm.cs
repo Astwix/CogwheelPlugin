@@ -30,10 +30,12 @@ namespace CogwheelPlugin
             DepthTextBox.KeyPress += new KeyPressEventHandler(IsNumberOrDotPressed);
             CogsTextBox.KeyPress += new KeyPressEventHandler(IsNumberPressed);
             ExtrudeCountTextBox.KeyPress += new KeyPressEventHandler(IsNumberPressed);
+            ExtrudeTypeComboBox.SelectedIndex = 0;
+            ExtrudeCountTextBox.Enabled = false;
             OuterRadiusTextBox.Select();
         }
 
-        private void buildButton_Click(object sender, EventArgs e)
+        private void BuildButton_Click(object sender, EventArgs e)
         {
             Model.Cogwheel cw = null;
             try
@@ -132,6 +134,14 @@ namespace CogwheelPlugin
         {
             TextBox textbox = (TextBox)sender;
             _bindTextboxToLabel[textbox].BackColor = DefaultBackColor;
+        }
+
+        private void ExtrudeTypeComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (ExtrudeTypeComboBox.SelectedIndex == 0) ExtrudeCountTextBox.Enabled = false;
+            if (ExtrudeTypeComboBox.SelectedIndex == 1) ExtrudeCountTextBox.Enabled = true;
+            if (ExtrudeTypeComboBox.SelectedIndex == 2) ExtrudeCountTextBox.Enabled = true;
+            if (ExtrudeTypeComboBox.SelectedIndex == 3) ExtrudeCountTextBox.Enabled = true;
         }
     }
 }
