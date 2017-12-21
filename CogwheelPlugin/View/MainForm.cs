@@ -76,7 +76,7 @@ namespace CogwheelPlugin
             }
             catch (FormatException)
             {
-                //этот случай обработан ифами выше!
+                ShowErrorMessage(null, "Заданы не все параметры!");
             }
 
             if (cw != null)
@@ -114,7 +114,10 @@ namespace CogwheelPlugin
 
         private void ShowErrorMessage(Label label, string message)
         {
-            label.BackColor = Color.Pink;
+            if (label != null)
+            {
+                label.BackColor = Color.Pink;
+            }
             MessageBox.Show(message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
         }
 
