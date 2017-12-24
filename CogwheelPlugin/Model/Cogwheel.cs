@@ -44,8 +44,12 @@ namespace CogwheelPlugin.Model
         public ExtrudeType TypeOfExtrude
         {
             get { return _typeOfExtrude; }
-            private set { _typeOfExtrude = value; }
+            private set 
+            {
+                _typeOfExtrude = value; 
+            }
         }
+           
 
         public Cogwheel(double innerRadius, double outerRadius, 
             double holeRadius, double depth, int cogs)

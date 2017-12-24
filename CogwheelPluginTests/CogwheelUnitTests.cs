@@ -7,15 +7,16 @@ namespace CogwheelPluginTests
     [TestFixture]
     public class CogwheelUnitTests
     {
-        [TestCase(95, 100, 30, 70, 30, TestName = "(Позитивный)Максимальные параметры консруктора")]
-        [TestCase(1, 1.5, 0.5, 0.5, 5, TestName = "(Позитивный)Минимальные параметры консруктора")]
-        [TestCase(45.5, 50.5, 15.5, 35.5, 20, TestName = "(Позитивный)Средние параметры консруктора")]
+        [TestCase(95, 100, 30, 70, 30, CogwheelPlugin.Model.ExtrudeType.Circles, 7, TestName = "(Позитивный)Максимальные параметры консруктора (круги)")]
+        [TestCase(95, 100, 30, 70, 30, CogwheelPlugin.Model.ExtrudeType.Boats, 30, TestName = "(Позитивный)Максимальные параметры консруктора (лодочки)")]
+        [TestCase(1, 1.5, 0.5, 0.5, 5, CogwheelPlugin.Model.ExtrudeType.Needles, 3, TestName = "(Позитивный)Минимальные параметры консруктора")]
+        [TestCase(45.5, 50.5, 15.5, 35.5, 15, CogwheelPlugin.Model.ExtrudeType.Needles, 5, TestName = "(Позитивный)Средние параметры консруктора")]
         [Test]
-        public void TestPositiveCogwheelConstructor(double innerRadius, double outerRadius, double holeRadius, double depth, int cogs)
+        public void TestPositiveCogwheelConstructor(double innerRadius, double outerRadius, double holeRadius, double depth, int cogs, CogwheelPlugin.Model.ExtrudeType extrudeType, int extrudeCount)
         {
             Assert.DoesNotThrow((() =>
             {
-                new CogwheelPlugin.Model.Cogwheel(innerRadius, outerRadius, holeRadius, depth, cogs);
+                new CogwheelPlugin.Model.Cogwheel(innerRadius, outerRadius, holeRadius, depth, cogs, extrudeType, extrudeCount);
             }
             ));
         }
@@ -53,7 +54,7 @@ namespace CogwheelPluginTests
         [TestCase(95, 100, 30, double.PositiveInfinity, 30, typeof(CogwheelWrongDepthException), TestName = "(Негативный)Толщина double.positiveinfinity")]
 
         [TestCase(95, 100, 30, 70, 4, typeof(CogwheelWrongCogsException), TestName = "(Негативный)Количество зубцов меньше")]
-        [TestCase(95, 100, 30, 70, 31, typeof(CogwheelWrongCogsException), TestName = "(Негативный)Количество зубцов меньше")]
+        [TestCase(95, 100, 30, 70, 31, typeof(CogwheelWrongCogsException), TestName = "(Негативный)Количество зубцов больше")]
         [TestCase(95, 100, 30, 70, int.MinValue, typeof(CogwheelWrongCogsException), TestName = "(Негативный)Количество зубцов int.minvalue")]
         [TestCase(95, 100, 30, 70, int.MaxValue, typeof(CogwheelWrongCogsException), TestName = "(Негативный)Количество зубцов int.maxvalue")]
         [Test]
@@ -62,6 +63,21 @@ namespace CogwheelPluginTests
             Assert.That(() =>
             {
                 new CogwheelPlugin.Model.Cogwheel(innerRadius, outerRadius, holeRadius, depth, cogs);
+            }, Throws.TypeOf(exceptionType));
+        }
+
+        [TestCase(95, 100, 30, 70, 10, CogwheelPlugin.Model.ExtrudeType.Needles, 2, typeof(CogwheelWrongExtrudeCountException), TestName = "(Негативный)Количество вырезов меньше")]
+        [TestCase(95, 100, 30, 70, 10, CogwheelPlugin.Model.ExtrudeType.Needles, 31, typeof(CogwheelWrongExtrudeCountException), TestName = "(Негативный)Количество вырезов (спицеобразный) больше")]
+        [TestCase(95, 100, 30, 70, 10, CogwheelPlugin.Model.ExtrudeType.Circles, 8, typeof(CogwheelWrongExtrudeCountException), TestName = "(Негативный)Количество вырезов (круги) больше")]
+        [TestCase(95, 100, 30, 70, 10, CogwheelPlugin.Model.ExtrudeType.Needles, int.MinValue, typeof(CogwheelWrongExtrudeCountException), TestName = "(Негативный)Количество вырезов int.minvalue")]
+        [TestCase(95, 100, 30, 70, 10, CogwheelPlugin.Model.ExtrudeType.Needles, int.MaxValue, typeof(CogwheelWrongExtrudeCountException), TestName = "(Негативный)Количество вырезов int.maxvalue")]
+        
+        [Test]
+        public void TestNegativeCogwheelConstructor(double innerRadius, double outerRadius, double holeRadius, double depth, int cogs, CogwheelPlugin.Model.ExtrudeType extrudeType, int extrudeCount, Type exceptionType)
+        {
+            Assert.That(() =>
+            {
+                new CogwheelPlugin.Model.Cogwheel(innerRadius, outerRadius, holeRadius, depth, cogs, extrudeType, extrudeCount);
             }, Throws.TypeOf(exceptionType));
         }
 
@@ -103,6 +119,14 @@ namespace CogwheelPluginTests
         {
             CogwheelPlugin.Model.Cogwheel cw = new CogwheelPlugin.Model.Cogwheel(95, 100, 30, 70, 30);
             Assert.AreEqual(value, cw.Cogs);
+        }
+
+        [TestCase(4, TestName = "(Позитивный)Получение количества вырезов")]
+        [Test]
+        public void TestExtrudeGet(double value)
+        {
+            CogwheelPlugin.Model.Cogwheel cw = new CogwheelPlugin.Model.Cogwheel(95, 100, 30, 70, 30, CogwheelPlugin.Model.ExtrudeType.Circles, 4);
+            Assert.AreEqual(value, cw.ExtrudeCount);
         }
     }
 }
