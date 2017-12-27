@@ -45,10 +45,10 @@ namespace CogwheelPlugin
                 double tempHoleRadius = Convert.ToDouble(HoleRadiusTextBox.Text);
                 double tempDepth = Convert.ToDouble(DepthTextBox.Text);
                 int tempCogs = Convert.ToInt32(CogsTextBox.Text);
-                int extrudeCount = Convert.ToInt32(ExtrudeCountTextBox.Text);
-                Model.ExtrudeType typeOfExtrude = (Model.ExtrudeType)ExtrudeTypeComboBox.SelectedIndex;
+                int tempExtrudeCount = Convert.ToInt32(ExtrudeCountTextBox.Text);
+                Model.ExtrudeType tempTypeOfExtrude = (Model.ExtrudeType)ExtrudeTypeComboBox.SelectedIndex;
                 cw = new Model.Cogwheel(tempInnerRadius, tempOuterRadius,
-                    tempHoleRadius, tempDepth, tempCogs, typeOfExtrude, extrudeCount);
+                    tempHoleRadius, tempDepth, tempCogs, tempTypeOfExtrude, tempExtrudeCount);
             }
             catch (CogwheelWrongOuterRadiusException ex)
             {
