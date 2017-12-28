@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using Kompas6API5;
 using Kompas6Constants;
 using Kompas6Constants3D;
@@ -10,16 +11,25 @@ using KAPITypes;
 
 namespace CogwheelPlugin.Model
 {
-    class KompasWrapper
+    /// <summary>
+    /// Класс для взаимодействия с КОМПАС
+    /// </summary>
+    public class KompasWrapper
     {
+        /// <summary>
+        /// Объект КОМПАС API
+        /// </summary>
         private KompasObject _kompas = null;
 
+        /// <summary>
+        /// Запуск КОМПАС, если он не запущен
+        /// </summary>
         public void StartKompas()
         {
             if (_kompas == null)
             {
-                Type t = Type.GetTypeFromProgID("KOMPAS.Application.5");
-                _kompas = (KompasObject)Activator.CreateInstance(t);
+                Type kompasType = Type.GetTypeFromProgID("KOMPAS.Application.5");
+                _kompas = (KompasObject)Activator.CreateInstance(kompasType);
             }
 
             if (_kompas != null)
@@ -34,10 +44,10 @@ namespace CogwheelPlugin.Model
                         _kompas.Visible = true;
                         retry = false;
                     }
-                    catch (System.Runtime.InteropServices.COMException ex)
+                    catch (System.Runtime.InteropServices.COMException)
                     {
-                        Type t = Type.GetTypeFromProgID("KOMPAS.Application.5");
-                        _kompas = (KompasObject)Activator.CreateInstance(t);
+                        Type kompasType = Type.GetTypeFromProgID("KOMPAS.Application.5");
+                        _kompas = (KompasObject)Activator.CreateInstance(kompasType);
                         if (tried > 3)
                         {
                             retry = false;
@@ -46,218 +56,310 @@ namespace CogwheelPlugin.Model
                 }
                 _kompas.ActivateControllerAPI();
             }
-
-            if (_kompas == null) throw new Exception("Нет связи с Kompas3D.");
         }
 
+        /// <summary>
+        /// Построение зубчатого колеса в КОМПАС
+        /// </summary>
+        /// <param name="cogwheel"></param>
         public void BuildCogwheel(Cogwheel cogwheel)
         {
-            if (_kompas == null) throw new Exception("Не возможно построить деталь. Нет связи с Kompas3D.");
+            if (_kompas == null) 
+            { 
+                throw new Exception(
+                    "Невозможно построить деталь. Нет связи с КОМПАС 3D."); 
+            }
 
-            double sector = 360.0 / (cogwheel.Cogs * 4); // градусов на один сектор
+            // Расчет количества градусов на один сектор (зуб)
+            double sector = 360.0 / (cogwheel.Cogs * 4); 
+            
+            // Расчет точек детали
+
             double[] xArray = new double[cogwheel.Cogs * 4];
             double[] yArray = new double[cogwheel.Cogs * 4];
-            double a = 0;
-            //заполнение массива точек 
+            double degree = 0;
             for (int i = 0; i < cogwheel.Cogs * 4; i = i + 4)
             {
-                xArray[i] = cogwheel.InnerRadius * Math.Cos(a * (Math.PI / 180));
-                yArray[i] = cogwheel.InnerRadius * Math.Sin(a * (Math.PI / 180));
+                xArray[i] = cogwheel.InnerRadius * Math.Cos(degree * (Math.PI / 180));
+                yArray[i] = cogwheel.InnerRadius * Math.Sin(degree * (Math.PI / 180));
+                degree = degree + sector;
 
-                a = a + sector;
+                for (int j = i + 1; j < i + 3; ++j)
+                {
+                    xArray[j] = cogwheel.OuterRadius * Math.Cos(degree * (Math.PI / 180));
+                    yArray[j] = cogwheel.OuterRadius * Math.Sin(degree * (Math.PI / 180));
+                    degree = degree + sector;
+                }
 
-                xArray[i + 1] = cogwheel.OuterRadius * Math.Cos(a * (Math.PI / 180));
-                yArray[i + 1] = cogwheel.OuterRadius * Math.Sin(a * (Math.PI / 180));
-
-                a = a + sector;
-
-                xArray[i + 2] = cogwheel.OuterRadius * Math.Cos(a * (Math.PI / 180));
-                yArray[i + 2] = cogwheel.OuterRadius * Math.Sin(a * (Math.PI / 180));
-
-                a = a + sector;
-
-                xArray[i + 3] = cogwheel.InnerRadius * Math.Cos(a * (Math.PI / 180));
-                yArray[i + 3] = cogwheel.InnerRadius * Math.Sin(a * (Math.PI / 180));
-
-                a = a + sector;
+                xArray[i + 3] = cogwheel.InnerRadius * Math.Cos(degree * (Math.PI / 180));
+                yArray[i + 3] = cogwheel.InnerRadius * Math.Sin(degree * (Math.PI / 180));
+                degree = degree + sector;
             }
 
-            // создание 3Д документа
-            ksDocument3D doc = _kompas.Document3D();
-            doc.Create();
-            ksPart part = doc.GetPart((short)Kompas6Constants3D.Part_Type.pTop_Part); // указатель на деталь 
-            ksEntity planeXOY = part.GetDefaultEntity((short)Kompas6Constants3D.Obj3dType.o3d_planeXOY); // определение плоскости XY 
-            ksEntity sketch = part.NewEntity((short)Kompas6Constants3D.Obj3dType.o3d_sketch); // создание переменной эскиза 
-            ksSketchDefinition sd = sketch.GetDefinition(); // получение указателя на параметры эскиза 
-            sd.SetPlane(planeXOY); // задание плоскости, на которой создается эскиз 
-            sketch.Create(); // создается эскиз 
-            ksDocument2D doc2d = sd.BeginEdit(); // режим редактирования эскиза 
+            // Создание 3Д документа
+            
+            ksDocument3D document3D = _kompas.Document3D();
+            document3D.Create();
+            
+            // Указатель на деталь 
+            ksPart part = document3D.GetPart((short)Kompas6Constants3D.Part_Type.pTop_Part);
+            // Определение плоскости XY
+            ksEntity planeXOY = 
+                part.GetDefaultEntity((short)Kompas6Constants3D.Obj3dType.o3d_planeXOY);
+            // Создание переменной эскиза 
+            ksEntity sketch = part.NewEntity((short)Kompas6Constants3D.Obj3dType.o3d_sketch);
+            // Получение указателя на параметры эскиза 
+            ksSketchDefinition sketchDefinition = sketch.GetDefinition();
+            // Задание плоскости, на которой создается эскиз 
+            sketchDefinition.SetPlane(planeXOY);
+            // Создание эскиза 
+            sketch.Create(); 
+            // Переход в режим редактирования эскиза
+            ksDocument2D document2D = sketchDefinition.BeginEdit();  
 
-            // соединение точек отрезками 
+            // Соединение точек отрезками 
+
             for (int i = 0; i < (cogwheel.Cogs * 4) - 1; i++)
             {
-                doc2d.ksLineSeg(xArray[i], yArray[i], xArray[i + 1], yArray[i + 1], 1);
+                document2D.ksLineSeg(xArray[i], yArray[i], xArray[i + 1], yArray[i + 1], 1);
             }
-            // соединение первой и последней точки 
-            doc2d.ksLineSeg(xArray[0], yArray[0], xArray[(cogwheel.Cogs * 4) - 1], yArray[(cogwheel.Cogs * 4) - 1], 1);
 
-            // центральная окружность -> вырез
-            doc2d.ksCircle(0, 0, cogwheel.HoleRadius, 1);
+            // Соединение первой и последней точки 
+            document2D.ksLineSeg(xArray[0], yArray[0], xArray[(cogwheel.Cogs * 4) - 1], 
+                yArray[(cogwheel.Cogs * 4) - 1], 1);
+            // Задание центральной окружности
+            document2D.ksCircle(0, 0, cogwheel.HoleRadius, 1);
 
-            // добавление вырезов
+            // Заранее расчитаем некоторые значения, которые далее часто используются
+
+            double radiusDelta = cogwheel.InnerRadius - cogwheel.HoleRadius;
+            double outerRadiusDot = cogwheel.HoleRadius + (radiusDelta * 0.8);
+            double innerRadiusDot = cogwheel.HoleRadius + (radiusDelta * 0.2);
+            double degreeToRadian = Math.PI / 180;
+
+            // Добавление вырезов
+            
             switch (cogwheel.TypeOfExtrude)
             {
                 case ExtrudeType.Classic:
+                    // Не обрабарывается здесь, т.к. имеет другую логику
                     break;
-                // круги
+
                 case ExtrudeType.Circles:
                     {
-                        double crugsDelta = ((360.0 / cogwheel.ExtrudeCount) * Math.PI) / 180;
-                        double l = cogwheel.HoleRadius + (cogwheel.InnerRadius - cogwheel.HoleRadius) / 2;
+                        double circlesDegreeDelta = ((360.0 / cogwheel.ExtrudeCount)
+                        * Math.PI) / 180;
+                        double distanceToCenter = cogwheel.HoleRadius
+                            + (cogwheel.InnerRadius - cogwheel.HoleRadius) / 2;
                         for (int i = 0; i < cogwheel.ExtrudeCount; ++i)
                         {
-                            double xc = l * Math.Cos(i * crugsDelta);
-                            double yc = l * Math.Sin(i * crugsDelta);
-                            doc2d.ksCircle(xc, yc, (cogwheel.HoleRadius + ((cogwheel.InnerRadius - cogwheel.HoleRadius) * 0.3)) / 2, 1);
+                            double xCenter = distanceToCenter * Math.Cos(i * circlesDegreeDelta);
+                            double yCenter = distanceToCenter * Math.Sin(i * circlesDegreeDelta);
+                            document2D.ksCircle(xCenter, yCenter, (cogwheel.HoleRadius
+                                + (radiusDelta * 0.3)) / 2, 1);
                         }
                     }
                     break;
-                // "лодочки"
+
                 case ExtrudeType.Boats:
                     {
                         double boatLength = (360 * 0.8) / cogwheel.ExtrudeCount;
                         double needleLength = (360 * 0.2) / cogwheel.ExtrudeCount;
-                        double b = 0;
+                        double degreePointer = 0;
+
                         for (int i = 0; i < cogwheel.ExtrudeCount; ++i)
                         {
-                            double x1 = (cogwheel.HoleRadius + ((cogwheel.InnerRadius - cogwheel.HoleRadius) * 0.8)) * Math.Cos(b * (Math.PI / 180));
-                            double y1 = (cogwheel.HoleRadius + ((cogwheel.InnerRadius - cogwheel.HoleRadius) * 0.8)) * Math.Sin(b * (Math.PI / 180));
-                            b += boatLength / 2;
-                            double xc1 = (cogwheel.HoleRadius + ((cogwheel.InnerRadius - cogwheel.HoleRadius) * 0.2)) * Math.Cos(b * (Math.PI / 180));
-                            double yc1 = (cogwheel.HoleRadius + ((cogwheel.InnerRadius - cogwheel.HoleRadius) * 0.2)) * Math.Sin(b * (Math.PI / 180));
-                            double xc2 = (cogwheel.HoleRadius + ((cogwheel.InnerRadius - cogwheel.HoleRadius) * 0.8)) * Math.Cos(b * (Math.PI / 180));
-                            double yc2 = (cogwheel.HoleRadius + ((cogwheel.InnerRadius - cogwheel.HoleRadius) * 0.8)) * Math.Sin(b * (Math.PI / 180));
-                            b += boatLength / 2;
-                            double x2 = (cogwheel.HoleRadius + ((cogwheel.InnerRadius - cogwheel.HoleRadius) * 0.8)) * Math.Cos(b * (Math.PI / 180));
-                            double y2 = (cogwheel.HoleRadius + ((cogwheel.InnerRadius - cogwheel.HoleRadius) * 0.8)) * Math.Sin(b * (Math.PI / 180));
-                            doc2d.ksBezier(0, 1);
-                            doc2d.ksPoint(x1, y1, 1);
-                            doc2d.ksPoint(xc1, yc1, 1);
-                            doc2d.ksPoint(x2, y2, 1);
-                            doc2d.ksEndObj();
-                            doc2d.ksBezier(0, 1);
-                            doc2d.ksPoint(x1, y1, 1);
-                            doc2d.ksPoint(xc2, yc2, 1);
-                            doc2d.ksPoint(x2, y2, 1);
-                            doc2d.ksEndObj();
-                            b += needleLength;
+                            double x1 = outerRadiusDot * Math.Cos(degreePointer * degreeToRadian);
+                            double y1 = outerRadiusDot * Math.Sin(degreePointer * degreeToRadian);
+                            degreePointer += boatLength / 2;
+                            double xc1 = innerRadiusDot * Math.Cos(degreePointer * degreeToRadian);
+                            double yc1 = innerRadiusDot * Math.Sin(degreePointer * degreeToRadian);
+                            double xc2 = outerRadiusDot * Math.Cos(degreePointer * degreeToRadian);
+                            double yc2 = outerRadiusDot * Math.Sin(degreePointer * degreeToRadian);
+                            degreePointer += boatLength / 2;
+                            double x2 = outerRadiusDot * Math.Cos(degreePointer * degreeToRadian);
+                            double y2 = outerRadiusDot * Math.Sin(degreePointer * degreeToRadian);
+                            Draw3DotBezier(document2D, x1, y1, xc1, yc1, x2, y2);
+                            Draw3DotBezier(document2D, x1, y1, xc2, yc2, x2, y2);
+                            degreePointer += needleLength;
                         }
                     }
                     break;
-                // спицеобразный
+                
                 case ExtrudeType.Needles:
                     {
                         double extrudeLength = (360 * 0.8) / cogwheel.ExtrudeCount;
                         double needleLength = (360 * 0.2) / cogwheel.ExtrudeCount;
-                        double b = 0;
+                        double degreePointer = 0;
                         for (int i = 0; i < cogwheel.ExtrudeCount; ++i)
                         {
-                            double x1 = (cogwheel.HoleRadius + ((cogwheel.InnerRadius - cogwheel.HoleRadius) * 0.2)) * Math.Cos(b * (Math.PI / 180));
-                            double y1 = (cogwheel.HoleRadius + ((cogwheel.InnerRadius - cogwheel.HoleRadius) * 0.2)) * Math.Sin(b * (Math.PI / 180));
-                            double x2 = (cogwheel.HoleRadius + ((cogwheel.InnerRadius - cogwheel.HoleRadius) * 0.8)) * Math.Cos(b * (Math.PI / 180));
-                            double y2 = (cogwheel.HoleRadius + ((cogwheel.InnerRadius - cogwheel.HoleRadius) * 0.8)) * Math.Sin(b * (Math.PI / 180));
-                            b += extrudeLength / 2;
-                            double xc1 = (cogwheel.HoleRadius + ((cogwheel.InnerRadius - cogwheel.HoleRadius) * 0.2)) * Math.Cos(b * (Math.PI / 180));
-                            double yc1 = (cogwheel.HoleRadius + ((cogwheel.InnerRadius - cogwheel.HoleRadius) * 0.2)) * Math.Sin(b * (Math.PI / 180));
-                            double xc2 = (cogwheel.HoleRadius + ((cogwheel.InnerRadius - cogwheel.HoleRadius) * 0.8)) * Math.Cos(b * (Math.PI / 180));
-                            double yc2 = (cogwheel.HoleRadius + ((cogwheel.InnerRadius - cogwheel.HoleRadius) * 0.8)) * Math.Sin(b * (Math.PI / 180));
-                            b += extrudeLength / 2;
-                            double x3 = (cogwheel.HoleRadius + ((cogwheel.InnerRadius - cogwheel.HoleRadius) * 0.2)) * Math.Cos(b * (Math.PI / 180));
-                            double y3 = (cogwheel.HoleRadius + ((cogwheel.InnerRadius - cogwheel.HoleRadius) * 0.2)) * Math.Sin(b * (Math.PI / 180));
-                            double x4 = (cogwheel.HoleRadius + ((cogwheel.InnerRadius - cogwheel.HoleRadius) * 0.8)) * Math.Cos(b * (Math.PI / 180));
-                            double y4 = (cogwheel.HoleRadius + ((cogwheel.InnerRadius - cogwheel.HoleRadius) * 0.8)) * Math.Sin(b * (Math.PI / 180));
-                            doc2d.ksBezier(0, 1);
-                            doc2d.ksPoint(x1, y1, 1);
-                            doc2d.ksPoint(xc1, yc1, 1);
-                            doc2d.ksPoint(x3, y3, 1);
-                            doc2d.ksEndObj();
-                            doc2d.ksBezier(0, 1);
-                            doc2d.ksPoint(x2, y2, 1);
-                            doc2d.ksPoint(xc2, yc2, 1);
-                            doc2d.ksPoint(x4, y4, 1);
-                            doc2d.ksEndObj();
-                            doc2d.ksLineSeg(x1, y1, x2, y2, 1);
-                            doc2d.ksLineSeg(x3, y3, x4, y4, 1);
-                            b += needleLength;
+                            double[] line1X = new double[3];
+                            double[] line1Y = new double[3];
+                            double[] line2X = new double[3];
+                            double[] line2Y = new double[3];
+                            for (int j = 0; j < 3; ++j)
+                            {
+                                line1X[j] = innerRadiusDot * Math.Cos(degreePointer * degreeToRadian);
+                                line1Y[j] = innerRadiusDot * Math.Sin(degreePointer * degreeToRadian);
+                                line2X[j] = outerRadiusDot * Math.Cos(degreePointer * degreeToRadian);
+                                line2Y[j] = outerRadiusDot * Math.Sin(degreePointer * degreeToRadian);
+                                degreePointer += extrudeLength / 2;
+                            }
+                            degreePointer -= extrudeLength / 2;
+                            Draw3DotBezier(document2D, 
+                                line1X[0], line1Y[0], 
+                                line1X[1], line1Y[1], 
+                                line1X[2], line1Y[2]);
+                            Draw3DotBezier(document2D, 
+                                line2X[0], line2Y[0], 
+                                line2X[1], line2Y[1], 
+                                line2X[2], line2Y[2]);
+                            document2D.ksLineSeg(line1X[0], line1Y[0], line2X[0], line2Y[0], 1);
+                            document2D.ksLineSeg(line1X[2], line1Y[2], line2X[2], line2Y[2], 1);
+                            degreePointer += needleLength;
                         }
                     }
                     break;
             }
+            sketchDefinition.EndEdit();
 
-            sd.EndEdit();
-
-            //выдавливание детали 
+            // Выдавливание детали 
+            
             ksEntity extrude = part.NewEntity((short)Kompas6Constants3D.Obj3dType.o3d_bossExtrusion);
-            ksBossExtrusionDefinition extrDef = extrude.GetDefinition();
-            extrDef.directionType = (short)Kompas6Constants3D.Direction_Type.dtMiddlePlane;
-            extrDef.SetSketch(sketch);
-            ksExtrusionParam extrudeParam = extrDef.ExtrusionParam();
+            ksBossExtrusionDefinition extrudeDefinition = extrude.GetDefinition();
+            extrudeDefinition.directionType = (short)Kompas6Constants3D.Direction_Type.dtMiddlePlane;
+            extrudeDefinition.SetSketch(sketch);
+            ksExtrusionParam extrudeParam = extrudeDefinition.ExtrusionParam();
             extrudeParam.depthNormal = cogwheel.Depth;
             extrude.Create();
 
-            if(cogwheel.TypeOfExtrude == ExtrudeType.Classic)
+            // Выдавливание классического выреза (углубления)
+
+            if (cogwheel.TypeOfExtrude == ExtrudeType.Classic)
             {
-                // первая доп. плоскость, первый эскиз и далее вырез
-                ksEntity plane = part.NewEntity((short)Kompas6Constants3D.Obj3dType.o3d_planeOffset); //создаем переменную смещенной поверхности 
-                ksPlaneOffsetDefinition pod = plane.GetDefinition(); // получаем указатель на её настройки 
-                pod.SetPlane(planeXOY); // ХУ плоскость установим как исходную, чтобы отталкиватся от неё 
-                pod.offset = cogwheel.Depth / 2; //смещаемся на десять 
-                    plane.Create(); // создаем саму плоскость 
-                ksEntity sketch2 = part.NewEntity((short)Kompas6Constants3D.Obj3dType.o3d_sketch); //создаем переменную эскиза 
-                ksSketchDefinition sd2 = sketch2.GetDefinition(); //получим указатель на параметры эскиза 
-                sd2.SetPlane(plane); //зададим плоскость на которой создаем эскиз 
-                sketch2.Create(); // создаем эскизa 
-                ksDocument2D doc2d2 = sd2.BeginEdit();
-                //нарисуем на эскизе два круга 
-                doc2d2.ksCircle(0, 0, (cogwheel.HoleRadius + ((cogwheel.InnerRadius - cogwheel.HoleRadius) * 0.2)), 1);
-                doc2d2.ksCircle(0, 0, (cogwheel.HoleRadius + ((cogwheel.InnerRadius - cogwheel.HoleRadius) * 0.8)), 1);
-                sd2.EndEdit();
+                // Создание дополнителных плоскостей с обоих сторон зубчатоо колеса
+                ksEntity planeTop = CreateOffsetPlane(planeXOY, part, cogwheel.Depth / 2, true);
+                ksEntity planeBottom = CreateOffsetPlane(planeXOY, part, cogwheel.Depth / 2, false);
 
-                // вырез
-                ksEntity cutExtrude = part.NewEntity((short)Kompas6Constants3D.Obj3dType.o3d_cutExtrusion);
-                ksCutExtrusionDefinition cutextrDef = cutExtrude.GetDefinition();
-                cutextrDef.directionType = (short)Kompas6Constants3D.Direction_Type.dtNormal;
-                cutextrDef.SetSketch(sketch2);
-                ksExtrusionParam cutExtrParam = cutextrDef.ExtrusionParam();
-                cutExtrParam.depthNormal = (cogwheel.Depth / 3);
-                cutExtrude.Create();
+                // Создание эскизов классическоо выреза (два круга) на плоскостях
+                ksEntity sketchTop = DrawClassicExtrude(part, planeTop, 
+                    innerRadiusDot, outerRadiusDot);
+                ksEntity sketchBottom = DrawClassicExtrude(part, planeBottom, 
+                    innerRadiusDot, outerRadiusDot);
 
-                // вторая доп. плоскость, второй эскиз и далее вырез
-                ksEntity plane2 = part.NewEntity((short)Kompas6Constants3D.Obj3dType.o3d_planeOffset); //создаем переменную смещенной поверхности 
-                ksPlaneOffsetDefinition pod2 = plane2.GetDefinition(); // получаем указатель на её настройки 
-                pod2.SetPlane(planeXOY); // ХУ плоскость установим как исходную, чтобы отталкиватся от неё 
-                pod2.direction = false;
-                pod2.offset = cogwheel.Depth / 2; //смещаемся на десять 
-                plane2.Create(); // создаем саму плоскость 
-                ksEntity sketch3 = part.NewEntity((short)Kompas6Constants3D.Obj3dType.o3d_sketch); //создаем переменную эскиза 
-                ksSketchDefinition sd3 = sketch3.GetDefinition(); //получим указатель на параметры эскиза 
-                sd3.SetPlane(plane2); //зададим плоскость на которой создаем эскиз 
-                sketch3.Create(); // создаем эскизa 
-                ksDocument2D doc2d3 = sd3.BeginEdit();
-                //нарисуем на эскизе два круга 
-                doc2d3.ksCircle(0, 0, (cogwheel.HoleRadius + ((cogwheel.InnerRadius - cogwheel.HoleRadius) * 0.2)), 1);
-                doc2d3.ksCircle(0, 0, (cogwheel.HoleRadius + ((cogwheel.InnerRadius - cogwheel.HoleRadius) * 0.8)), 1);
-                sd3.EndEdit();
-
-                // вырез
-                ksEntity cutExtrude2 = part.NewEntity((short)Kompas6Constants3D.Obj3dType.o3d_cutExtrusion);
-                ksCutExtrusionDefinition cutextrDef2 = cutExtrude2.GetDefinition();
-                cutextrDef2.directionType = (short)Kompas6Constants3D.Direction_Type.dtReverse;
-                cutextrDef2.SetSketch(sketch3);
-                ksExtrusionParam cutExtrParam2 = cutextrDef2.ExtrusionParam();
-                cutExtrParam2.depthReverse = (cogwheel.Depth / 3);
-                cutExtrude2.Create();
+                // Выдавливание эскизов
+                ExecuteCutExtrude(part, sketchTop, cogwheel.Depth / 3, false);
+                ExecuteCutExtrude(part, sketchBottom, cogwheel.Depth / 3, true);
             }
+        }
+
+        /// <summary>
+        /// Нарисовать кривую Безье по трем точкам. Требует режим редактирования эскиза.
+        /// </summary>
+        /// <param name="document2D"></param>
+        /// <param name="x1"></param>
+        /// <param name="y1"></param>
+        /// <param name="x2"></param>
+        /// <param name="y2"></param>
+        /// <param name="x3"></param>
+        /// <param name="y3"></param>
+        private void Draw3DotBezier(ksDocument2D document2D, 
+            double x1, double y1, double x2, double y2, double x3, double y3)
+        {
+            document2D.ksBezier(0, 1);
+            document2D.ksPoint(x1, y1, 1);
+            document2D.ksPoint(x2, y2, 1);
+            document2D.ksPoint(x3, y3, 1);
+            document2D.ksEndObj();
+        }
+
+        /// <summary>
+        /// Создать смещённую плоскость
+        /// </summary>
+        /// <param name="basePlane"></param>
+        /// <param name="part"></param>
+        /// <param name="offset"></param>
+        /// <param name="direction"></param>
+        /// <returns></returns>
+        private ksEntity CreateOffsetPlane(ksEntity basePlane, ksPart part, 
+            double offset, bool direction)
+        {
+            // Создание переменной смещенной поверхности 
+            ksEntity plane = 
+                part.NewEntity((short)Kompas6Constants3D.Obj3dType.o3d_planeOffset);
+            // Получение указателя на её настройки
+            ksPlaneOffsetDefinition planeOffsetDefinition = plane.GetDefinition();
+            // Установка исходной плоскости 
+            planeOffsetDefinition.SetPlane(basePlane);
+            // Смещение на половину толщины
+            planeOffsetDefinition.offset = offset;
+            planeOffsetDefinition.direction = direction;
+            plane.Create();
+            return plane;
+        }
+
+        /// <summary>
+        /// Сделать вырез
+        /// </summary>
+        /// <param name="part"></param>
+        /// <param name="sketch"></param>
+        /// <param name="depth"></param>
+        /// <param name="reverse"></param>
+        private void ExecuteCutExtrude(ksPart part, ksEntity sketch, 
+            double depth, bool reverse)
+        {
+            // Создание переменной выреза 
+            ksEntity cutExtrude = 
+                part.NewEntity((short)Kompas6Constants3D.Obj3dType.o3d_cutExtrusion);
+            // Получение указателя на его настройки
+            ksCutExtrusionDefinition cutextrDefinition = cutExtrude.GetDefinition();
+            if (reverse)
+            {
+                cutextrDefinition.directionType = 
+                    (short)Kompas6Constants3D.Direction_Type.dtReverse;
+            }
+            else
+            {
+                cutextrDefinition.directionType = 
+                    (short)Kompas6Constants3D.Direction_Type.dtNormal;
+            }
+            // Установка плоскости
+            cutextrDefinition.SetSketch(sketch);
+            ksExtrusionParam cutExtrudeParam = cutextrDefinition.ExtrusionParam();
+            if (reverse)
+            {
+                cutExtrudeParam.depthReverse = depth;
+            }
+            else
+            {
+                cutExtrudeParam.depthNormal = depth;
+            }
+            cutExtrude.Create();
+        }
+        
+        /// <summary>
+        /// Создать эскиз классического выреза (два круга)
+        /// </summary>
+        /// <param name="part"></param>
+        /// <param name="plane"></param>
+        /// <param name="innerRadius"></param>
+        /// <param name="outerRadius"></param>
+        /// <returns></returns>
+        private ksEntity DrawClassicExtrude(ksPart part, ksEntity plane, 
+            double innerRadius, double outerRadius)
+        {
+            // Создание переменной эскиза 
+            ksEntity sketch = part.NewEntity((short)Kompas6Constants3D.Obj3dType.o3d_sketch);
+            // Получение указателя на параметры эскиза 
+            ksSketchDefinition sketchDefinition = sketch.GetDefinition();
+            // Задание плоскости, на которой создастся эскиз 
+            sketchDefinition.SetPlane(plane);
+            sketch.Create();
+            ksDocument2D document2D = sketchDefinition.BeginEdit();
+            document2D.ksCircle(0, 0, innerRadius, 1);
+            document2D.ksCircle(0, 0, outerRadius, 1);
+            sketchDefinition.EndEdit();
+            return sketch;
         }
     }
 }

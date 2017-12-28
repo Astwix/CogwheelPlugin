@@ -7,14 +7,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+
 using CogwheelPlugin.Model.Exceptions;
 
 namespace CogwheelPlugin
 {
+    /// <summary>
+    /// Главная форма программы
+    /// </summary>
     public partial class MainForm : Form
     {
         private Model.KompasWrapper _kompasWrapper = new Model.KompasWrapper();
-        private Dictionary<TextBox, Label> _bindTextboxToLabel = new Dictionary<TextBox, Label>();
+        private Dictionary<TextBox, Label> _bindTextboxToLabel = 
+            new Dictionary<TextBox, Label>();
         public MainForm()
         {
             InitializeComponent();
@@ -37,7 +42,7 @@ namespace CogwheelPlugin
 
         private void BuildButton_Click(object sender, EventArgs e)
         {
-            Model.Cogwheel cw = null;
+            Model.Cogwheel cogwheel = null;
             try
             {
                 double tempOuterRadius = Convert.ToDouble(OuterRadiusTextBox.Text);
@@ -46,46 +51,54 @@ namespace CogwheelPlugin
                 double tempDepth = Convert.ToDouble(DepthTextBox.Text);
                 int tempCogs = Convert.ToInt32(CogsTextBox.Text);
                 int tempExtrudeCount = Convert.ToInt32(ExtrudeCountTextBox.Text);
-                Model.ExtrudeType tempTypeOfExtrude = (Model.ExtrudeType)ExtrudeTypeComboBox.SelectedIndex;
-                cw = new Model.Cogwheel(tempInnerRadius, tempOuterRadius,
-                    tempHoleRadius, tempDepth, tempCogs, tempTypeOfExtrude, tempExtrudeCount);
+                ExtrudeType tempTypeOfExtrude = 
+                    (ExtrudeType)ExtrudeTypeComboBox.SelectedIndex;
+                cogwheel = new Model.Cogwheel(tempInnerRadius, 
+                    tempOuterRadius, tempHoleRadius, tempDepth, 
+                    tempCogs, tempTypeOfExtrude, tempExtrudeCount);
             }
-            catch (CogwheelWrongOuterRadiusException ex)
+            catch (CogwheelWrongOuterRadiusException exception)
             {
-                ShowErrorMessage(OuterRadiusLabel, ex.Message);
+                ShowErrorMessage(OuterRadiusLabel, exception.Message);
             }
-            catch (CogwheelWrongInnerRadiusException ex)
+            catch (CogwheelWrongInnerRadiusException exception)
             {
-                ShowErrorMessage(InnerRadiusLabel, ex.Message);
+                ShowErrorMessage(InnerRadiusLabel, exception.Message);
             }
-            catch (CogwheelWrongHoleRadiusException ex)
+            catch (CogwheelWrongHoleRadiusException exception)
             {
-                ShowErrorMessage(HoleRadiusLabel, ex.Message);
+                ShowErrorMessage(HoleRadiusLabel, exception.Message);
             }
-            catch (CogwheelWrongDepthException ex)
+            catch (CogwheelWrongDepthException exception)
             {
-                ShowErrorMessage(DepthLabel, ex.Message);
+                ShowErrorMessage(DepthLabel, exception.Message);
             }
-            catch (CogwheelWrongCogsException ex)
+            catch (CogwheelWrongCogsException exception)
             {
-                ShowErrorMessage(CogsLabel, ex.Message);
+                ShowErrorMessage(CogsLabel, exception.Message);
             }
-            catch (CogwheelWrongExtrudeCountException ex)
+            catch (CogwheelWrongExtrudeCountException exception)
             {
-                ShowErrorMessage(ExtrudeCountLabel, ex.Message);
+                ShowErrorMessage(ExtrudeCountLabel, exception.Message);
             }
             catch (FormatException)
             {
                 ShowErrorMessage(null, "Заданы не все параметры!");
             }
 
-            if (cw != null)
+            if (cogwheel != null)
             {
                 _kompasWrapper.StartKompas();
-                _kompasWrapper.BuildCogwheel(cw);
+                _kompasWrapper.BuildCogwheel(cogwheel);
             }
         }
 
+        /// <summary>
+        /// Событие, проверяеющее, чтобы textbox содержал 
+        /// максимум один знак разделения: точка или запятая
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void IsNumberOrDotPressed(object sender, KeyPressEventArgs e)
         {
             if (!(Char.IsControl(e.KeyChar))
@@ -102,6 +115,12 @@ namespace CogwheelPlugin
             }
         }
 
+        /// <summary>
+        /// Событие, проверяющее, чтобы textbox содержал 
+        /// только цифры
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void IsNumberPressed(object sender, KeyPressEventArgs e)
         {
             if (!(Char.IsControl(e.KeyChar))
@@ -112,15 +131,26 @@ namespace CogwheelPlugin
             }
         }
 
+        /// <summary>
+        /// Вывод сообщения об ошибке и подсветка соответствующего label
+        /// </summary>
+        /// <param name="label"></param>
+        /// <param name="message"></param>
         private void ShowErrorMessage(Label label, string message)
         {
             if (label != null)
             {
                 label.BackColor = Color.Pink;
             }
-            MessageBox.Show(message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+            MessageBox.Show(message, "Ошибка", MessageBoxButtons.OK, 
+                MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
         }
 
+        /// <summary>
+        /// Проверка textbox на неверное значение
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TextboxValidation(object sender, EventArgs e)
         {
             TextBox textbox = (TextBox)sender;
@@ -128,23 +158,40 @@ namespace CogwheelPlugin
                 || textbox.Text == "."
                 || textbox.Text == ",")
             {
-                ShowErrorMessage(_bindTextboxToLabel[textbox], "Ошибка в значении параметра!");
+                ShowErrorMessage(_bindTextboxToLabel[textbox], 
+                    "Ошибка в значении параметра!");
                 textbox.Focus();
             }
         }
 
+        /// <summary>
+        /// Возврат textbox исходного цвета
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ResetBackColor(object sender, EventArgs e)
         {
             TextBox textbox = (TextBox)sender;
             _bindTextboxToLabel[textbox].BackColor = DefaultBackColor;
         }
 
-        private void ExtrudeTypeComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        /// <summary>
+        /// Возможность заполнения "количество вырезов"
+        /// в соответствии с выбранным "тип выреза"
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ExtrudeTypeComboBox_SelectedIndexChanged(
+            object sender, EventArgs e)
         {
-            if (ExtrudeTypeComboBox.SelectedIndex == 0) ExtrudeCountTextBox.Enabled = false;
-            if (ExtrudeTypeComboBox.SelectedIndex == 1) ExtrudeCountTextBox.Enabled = true;
-            if (ExtrudeTypeComboBox.SelectedIndex == 2) ExtrudeCountTextBox.Enabled = true;
-            if (ExtrudeTypeComboBox.SelectedIndex == 3) ExtrudeCountTextBox.Enabled = true;
+            if (ExtrudeTypeComboBox.SelectedIndex == 0)
+            {
+                ExtrudeCountTextBox.Enabled = false;
+            }
+            else
+            {
+                ExtrudeCountTextBox.Enabled = true;
+            }
         }
     }
 }
