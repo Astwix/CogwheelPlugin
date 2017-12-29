@@ -17,9 +17,20 @@ namespace CogwheelPlugin
     /// </summary>
     public partial class MainForm : Form
     {
+        /// <summary>
+        /// Объект связи с КОМПАС
+        /// </summary>
         private Model.KompasWrapper _kompasWrapper = new Model.KompasWrapper();
+        
+        /// <summary>
+        /// Словарь, привязка textbox к label
+        /// </summary>
         private Dictionary<TextBox, Label> _bindTextboxToLabel = 
             new Dictionary<TextBox, Label>();
+
+        /// <summary>
+        /// Главная форма
+        /// </summary>
         public MainForm()
         {
             InitializeComponent();

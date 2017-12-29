@@ -165,14 +165,14 @@ namespace CogwheelPlugin.Model
                 if (!(value > HoleRadius)) 
                 { 
                     throw new Exceptions.CogwheelWrongInnerRadiusException(
-                        "Внутренний радиус не может быть меньше или равен радиусу" 
-                        + "внутреннего отверстия."); 
+                        "Внутренний радиус не может быть меньше или равен радиусу" + 
+                        "внутреннего отверстия."); 
                 }
                 if (!(value < OuterRadius)) 
                 { 
                     throw new Exceptions.CogwheelWrongInnerRadiusException
-                        ("Внутренний радиус не может быть больше или равен" 
-                        + "внешнему радиусу."); 
+                        ("Внутренний радиус не может быть больше или равен" + 
+                        "внешнему радиусу."); 
                 }
                 _innerRadius = value;
             }
@@ -242,14 +242,14 @@ namespace CogwheelPlugin.Model
                 if (!(value > 0)) 
                 { 
                     throw new Exceptions.CogwheelWrongHoleRadiusException(
-                        "Радиус внутреннего отверстия не может" +
+                        "Радиус внутреннего отверстия не может" + 
                         " быть меньше или равен нулю."); 
                 }
                 if (!(value < InnerRadius)) 
                 { 
                     throw new Exceptions.CogwheelWrongHoleRadiusException(
-                        "Радиус внутреннего отверстия не может быть больше" 
-                        + "или равен внутреннему радиусу."); 
+                        "Радиус внутреннего отверстия не может быть больше" + 
+                        "или равен внутреннему радиусу."); 
                 }
                 _holeRadius = value;
             }

@@ -9,13 +9,13 @@ namespace CogwheelPlugin.Model.Exceptions
     /// <summary>
     /// Исключение, выбрасываемое, если параметр "число зубцов" задан неправильно.
     /// </summary>
-    public class CogwheelWrongCogsException:ApplicationException
+    public class CogwheelWrongCogsException : ApplicationException
     {
         /// <summary>
         /// Конструктор исключения
         /// </summary>
         /// <param name="message"></param>
-        public CogwheelWrongCogsException(string message) :base(message)
+        public CogwheelWrongCogsException(string message) : base(message)
         {
         }
     }
